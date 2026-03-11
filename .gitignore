@@ -1,0 +1,5 @@
+node_modules/
+.env
+serena.db
+*.log
+npm-debug.log*

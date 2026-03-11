@@ -1,0 +1,20 @@
+{
+  "name": "espaco-serena-backend",
+  "version": "1.0.0",
+  "description": "Backend API para login admin e dashboard do Espaco Serena",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "tg:check": "node telegram-setup.js check",
+    "tg:updates": "node telegram-setup.js updates",
+    "tg:send": "node telegram-setup.js send"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.7.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2"
+  }
+}

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Espaco Serena | Cliente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<style>
+:root{--bg:#eef5f4;--ink:#132a2a;--soft:#406062;--brand:#0f8a7f;--brand2:#0a6a61;--panel:#fff;--line:#d9e4e3;--warn:#7a4b05}
+*{box-sizing:border-box}body{margin:0;font-family:"Manrope",sans-serif;background:radial-gradient(circle at 10% -10%,#d7f7f3 0,#eef5f4 45%,#ecf3f3 100%);color:var(--ink)}
+.header{position:sticky;top:0;background:#173435;color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center}
+.brand{font-family:"DM Serif Display",serif;font-size:32px}.header a{color:#dff4f2;text-decoration:none;font-weight:700}
+.wrap{max-width:1080px;margin:auto;padding:24px 16px 48px}.title{font-family:"DM Serif Display",serif;font-size:42px;margin:10px 0 18px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(280px,1fr));gap:16px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 10px 26px rgba(31,66,65,.08)}
+form{display:grid;gap:10px}input,select,textarea{width:100%;padding:12px;border:1px solid #c8d7d6;border-radius:11px;font:500 14px "Manrope",sans-serif;background:#fbfefe}
+.btn{border:0;border-radius:12px;padding:12px 14px;font:700 14px "Manrope",sans-serif;cursor:pointer}.btn-main{background:linear-gradient(120deg,var(--brand),var(--brand2));color:#fff}
+.btn-soft{background:#243f3f;color:#fff}.hidden{display:none}.msg{display:none;margin-top:8px;padding:10px;border-radius:10px;font-size:13px;font-weight:700}.msg.error{display:block;background:#ffe7e7;color:#7b1f1f}.msg.ok{display:block;background:#e5f8ea;color:#0f5132}.msg.warn{display:block;background:#fff4df;color:var(--warn)}
+.auth-split{display:grid;grid-template-columns:repeat(2,minmax(260px,1fr));gap:14px}
+.auth-block{padding:12px;border:1px solid var(--line);border-radius:12px;background:#fcfefe}
+.auth-block h4{margin:0 0 10px}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:14px 0}.kpi{background:#f4fbfa;border:1px solid var(--line);border-radius:12px;padding:10px}.kpi b{display:block;font-size:24px}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px}table{width:100%;border-collapse:collapse;min-width:600px}th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left}
+@media(max-width:900px){.grid{grid-template-columns:1fr}.title{font-size:34px}}
+@media(max-width:760px){.auth-split{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="header"> 
+<div class="brand">Espaco Serena</div>
+<nav><a href="espaço serena.html">Voltar ao Site</a> | <a href="recuperar.html">Recuperar Password</a></nav>
+</header>
+<div class="wrap">
+<h1 class="title">Portal Cliente</h1>
+<div class="grid">
+<div id="clienteAuthCard" class="panel">
+<h3>Acesso Cliente</h3>
+<p style="margin:0 0 12px;color:var(--soft)">Login e criacao de conta foram separados para melhorar a experiencia.</p>
+<div class="actions" style="display:flex;gap:10px;flex-wrap:wrap">
+<a class="btn btn-soft" href="cliente-login.html" style="text-decoration:none;display:inline-block">Ir para Login</a>
+<a class="btn btn-main" href="cliente-registo.html" style="text-decoration:none;display:inline-block">Ir para Criar Conta</a>
+<a href="cliente-recuperar.html" style="align-self:center;font-weight:700;color:#1b4f50">Esqueci a password</a>
+</div>
+<div id="clienteAuthMsg" class="msg"></div>
+</div>
+
+<div id="clientePanel" class="panel hidden">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+<div><h3 style="margin:0">Area do Cliente</h3><small id="clienteProfileText" style="color:var(--soft)"></small></div>
+<button id="btnClienteLogout" class="btn btn-soft" type="button">Terminar Sessao</button>
+</div>
+<div class="kpi-grid">
+<div class="kpi"><b id="clienteCountBookings">0</b><span>Marcacoes</span></div>
+<div class="kpi"><b id="clienteCountMsgs">0</b><span>Mensagens</span></div>
+<div class="kpi"><b id="clienteCountPremium">0</b><span>Premium</span></div>
+</div>
+<button id="btnClienteRefresh" class="btn btn-soft" type="button">Atualizar Dashboard</button>
+<h4>Nova Marcacao</h4>
+<form id="form-marcacao-cliente">
+<input id="clienteBookNome" type="text" placeholder="Nome para a sessao" required>
+<div id="clientePackOptions" class="auth-block"></div>
+<div id="clienteServiceOptions" class="auth-block"></div>
+<small style="color:var(--soft)">Pode selecionar varios tratamentos em simultaneo.</small>
+<input id="clienteBookData" placeholder="Escolher data" required>
+<input id="clienteBookHora" type="time" required>
+<button class="btn btn-main" type="submit">Marcar Servico</button>
+</form>
+<div id="clientePriceEstimate" class="panel" style="margin-top:8px;padding:10px;background:#f6fbfb"></div>
+<div id="clienteBookMsg" class="msg"></div>
+<h4>Enviar Mensagem</h4>
+<form id="form-msg-cliente">
+<textarea id="clienteMensagem" rows="4" placeholder="Mensagem para equipa premium" required></textarea>
+<button class="btn btn-main" type="submit">Enviar</button>
+</form>
+<div id="clienteMsgMsg" class="msg"></div>
+<h4>Codigo de Desconto</h4>
+<div class="auth-block">
+<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+<input id="clienteDiscountCode" type="text" placeholder="Ex: SERENA10" style="max-width:240px">
+<button id="btnVerifyDiscount" class="btn btn-main" type="button">Verificar Codigo</button>
+</div>
+<div id="clienteDiscountMsg" class="msg"></div>
+<div id="clienteDiscountResult" style="margin-top:8px;color:var(--soft)"></div>
+</div>
+<h4>Promocoes</h4><div id="clientePromos"></div>
+<h4>Servicos Disponiveis</h4><div id="clientePremium"></div>
+<h4>Historico de Marcacoes</h4>
+<div class="table-wrap"><table><thead><tr><th>Servico</th><th>Data</th><th>Hora</th><th>Criado em</th></tr></thead><tbody id="clienteBookingsTable"></tbody></table></div>
+<h4>Historico de Mensagens</h4>
+<div class="table-wrap"><table><thead><tr><th>Mensagem</th><th>Criado em</th></tr></thead><tbody id="clienteMsgsTable"></tbody></table></div>
+<div id="clientePanelMsg" class="msg"></div>
+</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+const API_BASE = "http://localhost:4000/api";
+const CLIENT_ACCESS_KEY = "serenaClientAccess";
+const CLIENT_REFRESH_KEY = "serenaClientRefresh";
+const SERVICE_BASE_PRICES = {
+	"Massagem Relaxante": 45,
+	"Massagem Terapeutica": 55,
+	"Reflexologia": 40,
+	"Aromaterapia": 50,
+	"Serenity Plus": 119,
+	"Aromaterapia Signature": 69,
+	"Recovery Deep Tissue": 79
+};
+const DEFAULT_MASSAGE_PACKS = [
+	{ id: "pack-relax", title: "Pack Relax", services: ["Massagem Relaxante", "Aromaterapia"] },
+	{ id: "pack-recuperacao", title: "Pack Recuperacao", services: ["Massagem Terapeutica", "Recovery Deep Tissue"] },
+	{ id: "pack-premium", title: "Pack Premium Serena", services: ["Serenity Plus", "Aromaterapia Signature", "Reflexologia"] }
+];
+const NORMAL_SERVICES = [
+	{ title: "Massagem Relaxante", description: "Alivio de tensao fisica e mental.", price: "A partir de 45 EUR" },
+	{ title: "Massagem Terapeutica", description: "Recuperacao muscular e postura.", price: "A partir de 55 EUR" },
+	{ title: "Reflexologia", description: "Estimulo de pontos vitais.", price: "A partir de 40 EUR" },
+	{ title: "Aromaterapia", description: "Equilibrio emocional com oleos essenciais.", price: "A partir de 50 EUR" }
+];
+let clienteExtraDiscountPercent = 0;
+let clienteCodeDiscountPercent = 0;
+let selectedServiceSet = new Set();
+let currentServiceNames = [];
+let MASSAGE_PACKS = DEFAULT_MASSAGE_PACKS.slice();
+flatpickr("#clienteBookData", { minDate: "today", dateFormat: "d/m/Y" });
+function showMessage(el, text, type){el.className="msg "+type;el.textContent=text;el.style.display="block";setTimeout(function(){el.style.display="none";},2600)}
+function formatDate(iso){if(!iso)return"-";const dt=new Date(iso);if(Number.isNaN(dt.getTime()))return"-";return dt.toLocaleString("pt-PT")}
+function formatEur(v){return new Intl.NumberFormat("pt-PT",{style:"currency",currency:"EUR"}).format(v)}
+function getTotalDiscountPercent(){return Math.min(90,Math.max(0,Number(clienteExtraDiscountPercent||0)+Number(clienteCodeDiscountPercent||0)))}
+function getSelectedServices(){return Array.from(selectedServiceSet.values())}
+function calcSubtotal(services){return services.reduce(function(acc,name){return acc+Number(SERVICE_BASE_PRICES[name]||0);},0)}
+function renderPackOptions(){const host=document.getElementById("clientePackOptions");const packs=MASSAGE_PACKS.map(function(pack){const validServices=(pack.services||[]).filter(function(name){return currentServiceNames.indexOf(name)>=0;});const subtotal=calcSubtotal(validServices);if(!validServices.length)return"";return"<div class='panel' style='margin-bottom:8px;padding:10px'><strong>"+pack.title+"</strong><small style='display:block;color:#406062'>"+validServices.join(", ")+"</small><small style='display:block;color:#406062'>Subtotal do pack: "+formatEur(subtotal)+"</small><div style='margin-top:8px'><button type='button' class='btn btn-soft' data-pack-id='"+pack.id+"'>Aplicar Pack</button></div></div>";}).join("");host.innerHTML="<strong style='display:block;margin-bottom:8px'>Packs de Massagem (opcional)</strong>"+(packs||"<small>Sem packs disponiveis.</small>")+"<button type='button' id='btnClearPack' class='btn btn-soft' style='margin-top:8px'>Limpar Selecoes</button>";host.querySelectorAll("button[data-pack-id]").forEach(function(btn){btn.addEventListener("click",function(){const id=btn.getAttribute("data-pack-id");const pack=MASSAGE_PACKS.find(function(p){return String(p.id)===String(id);});if(!pack)return;selectedServiceSet=new Set((pack.services||[]).filter(function(name){return currentServiceNames.indexOf(name)>=0;}));renderServiceOptions(currentServiceNames.map(function(name){return{title:name};}));renderBookingEstimate();});});const clearBtn=document.getElementById("btnClearPack");if(clearBtn){clearBtn.addEventListener("click",function(){selectedServiceSet.clear();renderServiceOptions(currentServiceNames.map(function(name){return{title:name};}));renderBookingEstimate();});}}
+function renderServiceOptions(services){const box=document.getElementById("clienteServiceOptions");const uniq=[];const seen={};services.forEach(function(item){const name=String(item.title||"").trim();if(!name||seen[name])return;seen[name]=true;uniq.push(name);});box.innerHTML=uniq.length?uniq.map(function(name){const checked=selectedServiceSet.has(name)?" checked":"";return"<label style='display:flex;align-items:center;gap:8px;margin-bottom:6px'><input type='checkbox' data-service-check='1' value='"+name+"' style='width:auto;margin:0'"+checked+">"+name+"</label>";}).join(""):"<small>Sem servicos disponiveis.</small>";box.querySelectorAll("input[data-service-check='1']").forEach(function(el){el.addEventListener("change",function(){if(el.checked)selectedServiceSet.add(el.value);else selectedServiceSet.delete(el.value);renderBookingEstimate();});});}
+function addServiceToSelection(name){const clean=String(name||"").trim();if(!clean)return;selectedServiceSet.add(clean);renderServiceOptions(currentServiceNames.map(function(n){return{title:n};}));renderBookingEstimate();}
+function renderBookingEstimate(){const services=getSelectedServices();const out=document.getElementById("clientePriceEstimate");if(!services.length){out.innerHTML="<small>Selecione um ou mais servicos para ver o preco final com desconto.</small>";return;}const subtotal=calcSubtotal(services);if(!(subtotal>0)){out.innerHTML="<small>Preco base nao definido para os servicos selecionados.</small>";return;}const totalPct=getTotalDiscountPercent();const finalPrice=subtotal*(1-totalPct/100);out.innerHTML="<strong>Tratamentos:</strong> "+services.join(", ")+"<br><strong>Subtotal:</strong> "+formatEur(subtotal)+" | <strong>Desconto total:</strong> "+String(totalPct)+"% | <strong>Total estimado:</strong> "+formatEur(finalPrice);}
+function getTokens(){return{access:localStorage.getItem(CLIENT_ACCESS_KEY)||"",refresh:localStorage.getItem(CLIENT_REFRESH_KEY)||""}}
+function setTokens(accessToken,refreshToken){localStorage.setItem(CLIENT_ACCESS_KEY,accessToken||"");localStorage.setItem(CLIENT_REFRESH_KEY,refreshToken||"")}
+function clearTokens(){localStorage.removeItem(CLIENT_ACCESS_KEY);localStorage.removeItem(CLIENT_REFRESH_KEY)}
+async function refreshToken(){const t=getTokens();if(!t.refresh)throw new Error("Sessao expirada");const r=await fetch(API_BASE+"/auth/refresh",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({refreshToken:t.refresh})});const d=await r.json().catch(function(){return{}});if(!r.ok){clearTokens();throw new Error(d.message||"Falha ao renovar token")}setTokens(d.accessToken,d.refreshToken)}
+async function api(path,options,retry){const t=getTokens();const headers=Object.assign({"Content-Type":"application/json"},(options&&options.headers)||{});if(t.access)headers.Authorization="Bearer "+t.access;const r=await fetch(API_BASE+path,Object.assign({},options||{},{headers}));const d=await r.json().catch(function(){return{}});if(r.status===401&&!retry){await refreshToken();return api(path,options,true)}if(!r.ok)throw new Error(d.message||"Erro na API");return d}
+const clienteAuthCard=document.getElementById("clienteAuthCard");const clientePanel=document.getElementById("clientePanel");const clienteAuthMsg=document.getElementById("clienteAuthMsg");const clientePanelMsg=document.getElementById("clientePanelMsg");
+function setClienteView(loggedIn){if(loggedIn){clienteAuthCard.classList.add("hidden");clientePanel.classList.remove("hidden");loadClienteDashboard()}else{clienteAuthCard.classList.remove("hidden");clientePanel.classList.add("hidden")}}
+async function loadClienteDashboard(){
+try{
+const payload=await api("/client/dashboard",{method:"GET"});
+const promos=await api("/client/promotions",{method:"GET"});
+const premium=await api("/client/premium-services",{method:"GET"});
+let packsPayload={items:[]};
+try{packsPayload=await api("/client/massage-packs",{method:"GET"});}catch(_e){packsPayload={items:[]};}
+const profile=payload.profile||{};
+const extraDiscount=Number(profile.extra_discount_percent||0);
+clienteExtraDiscountPercent=extraDiscount;
+document.getElementById("clienteProfileText").textContent=(profile.name||"Cliente")+" - "+(profile.email||"")+" | Desconto extra admin: "+String(extraDiscount)+"%";
+const bookings=payload.bookings||[];
+const messages=payload.messages||[];
+const promoItems=promos.items||[];
+const premiumItems=premium.items||[];
+const livePacks=(packsPayload&&Array.isArray(packsPayload.items))?packsPayload.items.map(function(i){return{id:i.id,title:i.name,services:Array.isArray(i.services)?i.services:[]};}):[];
+MASSAGE_PACKS=livePacks.length?livePacks:DEFAULT_MASSAGE_PACKS.slice();
+const allServices=NORMAL_SERVICES.concat(premiumItems);
+currentServiceNames=allServices.map(function(i){return String(i.title||"").trim();}).filter(function(v){return Boolean(v);});
+selectedServiceSet=new Set(getSelectedServices().filter(function(name){return currentServiceNames.indexOf(name)>=0;}));
+renderPackOptions();
+renderServiceOptions(allServices);
+
+document.getElementById("clienteCountBookings").textContent=String(bookings.length);
+document.getElementById("clienteCountMsgs").textContent=String(messages.length);
+document.getElementById("clienteCountPremium").textContent=String(premiumItems.length);
+
+document.getElementById("clienteBookingsTable").innerHTML=bookings.length
+?bookings.map(function(i){return"<tr><td>"+i.service+"</td><td>"+i.date+"</td><td>"+i.time+"</td><td>"+formatDate(i.created_at)+"</td></tr>";}).join("")
+:"<tr><td colspan='4'>Sem marcacoes.</td></tr>";
+
+document.getElementById("clienteMsgsTable").innerHTML=messages.length
+?messages.map(function(i){return"<tr><td>"+i.message+"</td><td>"+formatDate(i.created_at)+"</td></tr>";}).join("")
+:"<tr><td colspan='2'>Sem mensagens.</td></tr>";
+
+document.getElementById("clientePromos").innerHTML=promoItems.length
+?promoItems.map(function(i){return"<div class='panel' style='margin-bottom:8px'><strong>"+i.title+"</strong><small style='display:block;color:#406062'>Codigo: "+i.code+" | Validade: "+i.validUntil+"</small></div>";}).join("")
+:"<small>Sem promocoes.</small>";
+
+document.getElementById("clientePremium").innerHTML=allServices.length
+?allServices.map(function(i){return"<div class='panel' style='margin-bottom:8px'><strong>"+i.title+"</strong><small style='display:block;color:#406062'>"+(i.description||"")+"</small><small style='display:block;color:#406062'>"+(i.price||"")+"</small><div style='margin-top:8px'><button type='button' class='btn btn-soft' data-pick-service='"+i.title+"'>Adicionar a marcacao</button></div></div>";}).join("")
+:"<small>Sem servicos disponiveis.</small>";
+document.querySelectorAll("button[data-pick-service]").forEach(function(btn){btn.addEventListener("click",function(){addServiceToSelection(btn.getAttribute("data-pick-service"));showMessage(document.getElementById("clienteBookMsg"),"Servico adicionado a marcacao.","ok");});});
+
+const discountResult=document.getElementById("clienteDiscountResult");
+if(extraDiscount>0){
+discountResult.textContent="Desconto extra ativo por admin: "+String(extraDiscount)+"%"+(profile.extra_discount_note?" - "+profile.extra_discount_note:"");
+}else if(!discountResult.textContent){
+discountResult.textContent="Sem desconto extra atribuido pelo admin.";
+}
+renderBookingEstimate();
+}catch(error){showMessage(clientePanelMsg,error.message,"error");clearTokens();setClienteView(false)}
+}
+document.getElementById("btnClienteRefresh").addEventListener("click",loadClienteDashboard);
+document.getElementById("btnClienteLogout").addEventListener("click",async function(){try{const r=getTokens().refresh;if(r){await fetch(API_BASE+"/auth/logout",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({refreshToken:r})})}}catch(_e){}clearTokens();setClienteView(false);showMessage(clienteAuthMsg,"Sessao de cliente terminada.","warn")});
+document.getElementById("form-marcacao-cliente").addEventListener("submit",async function(e){e.preventDefault();const services=getSelectedServices();if(!services.length){showMessage(document.getElementById("clienteBookMsg"),"Selecione pelo menos um tratamento.","warn");return;}try{const payloadBase={name:document.getElementById("clienteBookNome").value.trim(),date:document.getElementById("clienteBookData").value,time:document.getElementById("clienteBookHora").value};await Promise.all(services.map(function(service){return api("/client/bookings",{method:"POST",body:JSON.stringify(Object.assign({},payloadBase,{service:service}))});}));showMessage(document.getElementById("clienteBookMsg"),"Marcacoes criadas: "+String(services.length),"ok");selectedServiceSet.clear();loadClienteDashboard();e.target.reset()}catch(error){showMessage(document.getElementById("clienteBookMsg"),error.message,"error")}});
+document.getElementById("form-msg-cliente").addEventListener("submit",async function(e){e.preventDefault();try{await api("/client/messages",{method:"POST",body:JSON.stringify({message:document.getElementById("clienteMensagem").value.trim()})});showMessage(document.getElementById("clienteMsgMsg"),"Mensagem premium enviada.","ok");loadClienteDashboard();e.target.reset()}catch(error){showMessage(document.getElementById("clienteMsgMsg"),error.message,"error")}});
+document.getElementById("btnVerifyDiscount").addEventListener("click",async function(){const code=(document.getElementById("clienteDiscountCode").value||"").trim().toUpperCase();const msg=document.getElementById("clienteDiscountMsg");const result=document.getElementById("clienteDiscountResult");if(!code){showMessage(msg,"Introduza um codigo.","warn");clienteCodeDiscountPercent=0;renderBookingEstimate();result.textContent="";return;}try{const payload=await api("/client/discount/verify",{method:"POST",body:JSON.stringify({code:code})});showMessage(msg,payload.message||"Codigo valido.","ok");const codePercent=Number(payload.percentOff||0);const extraPercent=Number(payload.extraPercentOff||0);const totalPercent=Number(payload.totalPercentOff||codePercent);clienteCodeDiscountPercent=codePercent;clienteExtraDiscountPercent=extraPercent;result.textContent="Codigo: "+String(codePercent)+"%"+(payload.description?" - "+payload.description:"")+" | Extra admin: "+String(extraPercent)+"% | Total: "+String(totalPercent)+"%";renderBookingEstimate();}catch(error){clienteCodeDiscountPercent=0;renderBookingEstimate();result.textContent="";showMessage(msg,error.message,"error")}});
+setClienteView(Boolean(getTokens().access)&&Boolean(getTokens().refresh));
+</script>
+</body>
+</html>
