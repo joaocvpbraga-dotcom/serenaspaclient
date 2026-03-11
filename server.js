@@ -814,7 +814,13 @@ async function forgotPasswordHandler(req, res, forcedRole) {
     }
 
     if (forcedRole === "admin" && !adminExists) {
-      return res.status(404).json({ message: "Email de admin não encontrado" });
+      const now = new Date().toISOString();
+      db.prepare("INSERT INTO admin_credentials (email, password_hash, created_at, updated_at) VALUES (?, ?, ?, ?)").run(
+        ADMIN_EMAIL,
+        hashPassword(ADMIN_PASSWORD),
+        now,
+        now
+      );
     }
 
     const shouldIssue = (role === "admin" && adminExists) || (role === "client" && clientExists);
