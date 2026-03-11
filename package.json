@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
+    "db:pg:init": "node scripts/pg-init-schema.js",
     "db:pg:migrate": "node scripts/migrate-sqlite-to-postgres.js",
     "tg:check": "node telegram-setup.js check",
     "tg:updates": "node telegram-setup.js updates",

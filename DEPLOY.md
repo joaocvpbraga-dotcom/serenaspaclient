@@ -111,12 +111,18 @@ const API_BASE = "https://api.teudominio.com/api";
 
 1. Cria base PostgreSQL e copia `DATABASE_URL`.
 2. Define `DATABASE_URL` no `.env` local.
-3. Corre migracao de dados:
+3. Inicializa schema:
+
+```bash
+npm run db:pg:init
+```
+
+4. Corre migracao de dados:
 
 ```bash
 npm run db:pg:migrate
 ```
 
-4. Mantem `DB_PATH` apenas como origem de migracao/backup.
+5. Mantem `DB_PATH` apenas como origem de migracao/backup.
 
 Nota: o servidor atual ainda usa SQLite em runtime. Esta migracao prepara dados para transicao gradual para runtime Postgres sem perda historica.
