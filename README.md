@@ -117,6 +117,33 @@ Nao uses credenciais padrao em producao.
 
 Instrucoes detalhadas em `DEPLOY.md` para Render, Railway e VPS com HTTPS.
 
+## Runbook rapido (producao)
+
+Usa esta ordem sempre que houver alteracoes para evitar erros de OTP apos publicar no GitHub:
+
+1. Render > Environment
+- `ADMIN_EMAIL` e `ADMIN_PASSWORD` definidos.
+- `ADMIN_2FA_ENABLED=true`.
+- `ADMIN_2FA_ALLOW_CONSOLE_FALLBACK=false` para obrigar Telegram real.
+- `TELEGRAM_BOT_TOKEN` e `TELEGRAM_CHAT_ID` atualizados.
+
+2. Telegram
+- Envia `/start` ao bot.
+- Valida o chat id com `npm run tg:updates -- <TOKEN>` e confirma que bate com `TELEGRAM_CHAT_ID`.
+
+3. Deploy
+- Fazer push para `main`.
+- Confirmar no Render que o deploy terminou e `GET /api/health` responde `ok:true`.
+
+4. Frontend admin
+- Abrir `admin-acesso.html` com refresh forcado (`Ctrl+F5`).
+- Se necessario, usar o botao `Usar API de producao` no proprio ecrã para fixar o endpoint certo.
+
+5. Teste final OTP
+- `Recuperar password` > `Pedir OTP no Telegram`.
+- Confirmar rececao do codigo no Telegram.
+- Validar OTP e entrar no admin.
+
 ## PostgreSQL (migracao de dados)
 
 Este projeto continua a correr com SQLite por defeito, mas ja inclui utilitario para migrar dados para PostgreSQL.
