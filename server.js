@@ -277,7 +277,15 @@ async function sendTelegramMessage(text) {
   });
 
   if (!response.ok) {
-    const err = new Error("Falha ao enviar código 2FA para Telegram");
+    let details = "";
+    try {
+      const payload = await response.json();
+      if (payload && payload.description) details = String(payload.description);
+    } catch (_err) {
+      // ignore parse errors and fall back to status text
+    }
+    const suffix = details ? " (" + details + ")" : " (HTTP " + response.status + ")";
+    const err = new Error("Falha ao enviar código 2FA para Telegram" + suffix);
     err.status = 503;
     throw err;
   }
