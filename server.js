@@ -812,6 +812,10 @@ async function forgotPasswordHandler(req, res, forcedRole) {
       else if (clientExists) role = "client";
     }
 
+    if (forcedRole === "admin" && !adminExists) {
+      return res.status(404).json({ message: "Email de admin não encontrado" });
+    }
+
     const shouldIssue = (role === "admin" && adminExists) || (role === "client" && clientExists);
     if (shouldIssue) {
       await issuePasswordReset(email, role);
