@@ -483,11 +483,14 @@ async function issuePasswordReset(email, role) {
     "Validade: 15 minutos";
 
   let delivery = "console";
+  let deliveryError = "";
   try {
     await sendTelegramMessage(resetText);
     delivery = "telegram";
-  } catch (_err) {
+  } catch (error) {
+    deliveryError = (error && error.message) ? String(error.message) : "Falha no envio Telegram";
     console.warn("[RESET] Telegram indisponível, código OTP no terminal.");
+    console.warn("[RESET] Motivo:", deliveryError);
     console.warn(
       "[RESET] Role:",
       role,
@@ -498,7 +501,7 @@ async function issuePasswordReset(email, role) {
     );
   }
 
-  return { delivery: delivery };
+  return { delivery: delivery, deliveryError: deliveryError };
 }
 
 async function createAdmin2faChallenge(email) {
@@ -824,8 +827,17 @@ async function forgotPasswordHandler(req, res, forcedRole) {
     }
 
     const shouldIssue = (role === "admin" && adminExists) || (role === "client" && clientExists);
+    let resetIssue = null;
     if (shouldIssue) {
-      await issuePasswordReset(email, role);
+      resetIssue = await issuePasswordReset(email, role);
+    }
+
+    if (forcedRole === "admin" && resetIssue && resetIssue.delivery !== "telegram") {
+      return res.status(503).json({
+        message: "OTP indisponível no Telegram. Verifique TELEGRAM_BOT_TOKEN e TELEGRAM_CHAT_ID no Render.",
+        delivery: resetIssue.delivery,
+        deliveryError: resetIssue.deliveryError || "Falha no envio Telegram"
+      });
     }
 
     return res.json({ message: "Se o email existir, enviamos instruções de recuperação." });
