@@ -769,8 +769,20 @@ app.post("/api/auth/login", async function (req, res) {
     }
 
     const receivedHash = hashPassword(password);
-    if (!safeEq(receivedHash, adminCred.password_hash)) {
+    const envPasswordConfigured = ADMIN_PASSWORD && ADMIN_PASSWORD !== "change-me-now";
+    const matchesDbPassword = safeEq(receivedHash, adminCred.password_hash);
+    const matchesEnvPassword = envPasswordConfigured && safeEq(receivedHash, adminPasswordHash);
+
+    if (!matchesDbPassword && !matchesEnvPassword) {
       return res.status(401).json({ message: "Credenciais inválidas" });
+    }
+
+    if (!matchesDbPassword && matchesEnvPassword) {
+      db.prepare("UPDATE admin_credentials SET password_hash = ?, updated_at = ? WHERE email = ?").run(
+        adminPasswordHash,
+        new Date().toISOString(),
+        ADMIN_EMAIL
+      );
     }
 
     if (ADMIN_2FA_ENABLED) {
