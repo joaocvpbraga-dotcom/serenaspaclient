@@ -116,3 +116,17 @@ Nao uses credenciais padrao em producao.
 ## Deploy
 
 Instrucoes detalhadas em `DEPLOY.md` para Render, Railway e VPS com HTTPS.
+
+## PostgreSQL (migracao de dados)
+
+Este projeto continua a correr com SQLite por defeito, mas ja inclui utilitario para migrar dados para PostgreSQL.
+
+1. Define `DATABASE_URL` no `.env`.
+2. Cria schema no Postgres (automatico no script).
+3. Executa:
+
+```bash
+npm run db:pg:migrate
+```
+
+O script importa dados de `DB_PATH` (SQLite) para PostgreSQL usando `db/schema.postgres.sql`.

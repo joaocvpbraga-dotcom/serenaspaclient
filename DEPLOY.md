@@ -106,3 +106,17 @@ const API_BASE = "https://api.teudominio.com/api";
 - Usar segredos fortes em `JWT_SECRET` e `PASSWORD_SALT`
 - Renovar password admin em producao
 - Fazer backup de `serena.db`
+
+## PostgreSQL (Supabase/Neon/Render Postgres)
+
+1. Cria base PostgreSQL e copia `DATABASE_URL`.
+2. Define `DATABASE_URL` no `.env` local.
+3. Corre migracao de dados:
+
+```bash
+npm run db:pg:migrate
+```
+
+4. Mantem `DB_PATH` apenas como origem de migracao/backup.
+
+Nota: o servidor atual ainda usa SQLite em runtime. Esta migracao prepara dados para transicao gradual para runtime Postgres sem perda historica.
