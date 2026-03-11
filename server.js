@@ -257,18 +257,21 @@ function generateOtpCode() {
 }
 
 async function sendTelegramMessage(text) {
-  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
+  const otpToken = TELEGRAM_BOT_TOKEN || TELEGRAM_BOOKINGS_BOT_TOKEN;
+  const otpChatId = TELEGRAM_CHAT_ID || TELEGRAM_BOOKINGS_CHAT_ID;
+
+  if (!otpToken || !otpChatId) {
     const cfgErr = new Error("Telegram não configurado no backend");
     cfgErr.status = 503;
     throw cfgErr;
   }
 
-  const url = "https://api.telegram.org/bot" + TELEGRAM_BOT_TOKEN + "/sendMessage";
+  const url = "https://api.telegram.org/bot" + otpToken + "/sendMessage";
   const response = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      chat_id: TELEGRAM_CHAT_ID,
+      chat_id: otpChatId,
       text: text
     })
   });
