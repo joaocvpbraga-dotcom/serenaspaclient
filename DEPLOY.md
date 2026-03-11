@@ -3,6 +3,8 @@
 ## Variaveis seguras (obrigatorias)
 
 - `PORT=4000`
+- `NODE_ENV=production`
+- `DB_PATH=/var/data/serena.db` (Render com disco) ou `./serena.db` (local)
 - `JWT_SECRET=<64+ chars aleatorios>`
 - `ACCESS_TOKEN_TTL=15m`
 - `REFRESH_TOKEN_TTL_DAYS=7`
@@ -18,8 +20,11 @@ Nunca comitar `.env` no repositorio.
 1. Subir este backend para GitHub.
 2. Criar novo Web Service no Render e ligar ao repo.
 3. O Render deteta `render.yaml` automaticamente.
-4. Definir `FRONTEND_ORIGIN`, `ADMIN_EMAIL`, `ADMIN_PASSWORD` no painel.
+4. Confirmar disco persistente montado em `/var/data`.
+5. Definir `FRONTEND_ORIGIN`, `ADMIN_EMAIL`, `ADMIN_PASSWORD` no painel.
 5. Deploy e validar `GET /api/health`.
+
+Com `DB_PATH=/var/data/serena.db`, os dados deixam de ser perdidos em restart/deploy.
 
 HTTPS no Render vem por defeito no dominio `onrender.com`.
 

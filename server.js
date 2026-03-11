@@ -4,6 +4,8 @@ const express = require("express");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
+const fs = require("fs");
+const path = require("path");
 const Database = require("better-sqlite3");
 
 const app = express();
@@ -31,6 +33,8 @@ const NOTIFY_TEST_WINDOW_SECONDS = Number(process.env.NOTIFY_TEST_WINDOW_SECONDS
 const NOTIFY_TEST_MAX_PER_WINDOW = Number(process.env.NOTIFY_TEST_MAX_PER_WINDOW || 3);
 const NOTIFY_RATE_CLEANUP_SECONDS = Number(process.env.NOTIFY_RATE_CLEANUP_SECONDS || 300);
 const TRUST_PROXY_ENABLED = String(process.env.TRUST_PROXY_ENABLED || "false").toLowerCase() === "true";
+const DB_PATH_RAW = process.env.DB_PATH || "./serena.db";
+const DB_PATH = path.isAbsolute(DB_PATH_RAW) ? DB_PATH_RAW : path.resolve(process.cwd(), DB_PATH_RAW);
 
 const notifyTestRateMap = new Map();
 const notifyUsageStats = {
@@ -43,7 +47,8 @@ if (TRUST_PROXY_ENABLED) {
   app.set("trust proxy", 1);
 }
 
-const db = new Database("./serena.db");
+fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
+const db = new Database(DB_PATH);
 
 db.exec(`
 CREATE TABLE IF NOT EXISTS bookings (

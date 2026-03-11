@@ -5,9 +5,17 @@ services:
     autoDeploy: true
     plan: free
     healthCheckPath: /api/health
+    disks:
+      - name: serena-data
+        mountPath: /var/data
+        sizeGB: 1
     envVars:
       - key: PORT
         value: 4000
+      - key: NODE_ENV
+        value: production
+      - key: DB_PATH
+        value: /var/data/serena.db
       - key: JWT_SECRET
         generateValue: true
       - key: ACCESS_TOKEN_TTL
@@ -22,3 +30,5 @@ services:
         sync: false
       - key: PASSWORD_SALT
         generateValue: true
+      - key: TRUST_PROXY_ENABLED
+        value: true
