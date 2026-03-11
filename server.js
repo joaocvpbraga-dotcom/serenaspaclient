@@ -800,8 +800,9 @@ app.post("/api/auth/login", async function (req, res) {
 
 async function forgotPasswordHandler(req, res, forcedRole) {
   try {
-    const email = ensureText(req.body.email, "Email", 5, 120).toLowerCase();
+    const submittedEmail = ensureText(req.body.email, "Email", 5, 120).toLowerCase();
     const requestedRole = forcedRole || detectRoleFromBody(req.body);
+    const email = forcedRole === "admin" ? ADMIN_EMAIL : submittedEmail;
 
     const adminExists = Boolean(db.prepare("SELECT id FROM admin_credentials WHERE email = ? LIMIT 1").get(email));
     const clientExists = Boolean(db.prepare("SELECT id FROM customers WHERE email = ? LIMIT 1").get(email));
